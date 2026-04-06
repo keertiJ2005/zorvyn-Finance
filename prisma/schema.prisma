@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // going with sqlite for now so people can just run `npm dev` without spinning up docker
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  password     String
+  role         String        @default("VIEWER") // views mostly everything, changes nothing
+  status       String        @default("ACTIVE") 
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+
+  @@map("users")
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  amount      Float    // float is fine for this app, but if it gets real we should migrate to decimal
+  type        String   
+  category    String
+  date        DateTime
+  description String?
+  isDeleted   Boolean  @default(false) // soft deletes only, no destroying records
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user        User     @relation(fields: [createdBy], references: [id])
+
+  @@map("transactions")
+}
