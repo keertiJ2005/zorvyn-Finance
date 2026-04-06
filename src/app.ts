@@ -17,7 +17,12 @@ dotenv.config();
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
 
-// ✅ FIX 1: Proper CORS handling
+// ✅ BASE URL (USE EVERYWHERE)
+const BASE_URL =
+  process.env.BASE_URL ||
+  `http://localhost:${PORT}`;
+
+// ✅ CORS CONFIG
 const allowedOrigins = (process.env.CORS_ORIGIN || '*')
   .split(',')
   .map((origin) => origin.trim())
@@ -34,6 +39,8 @@ app.use(
       }
       return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   })
 );
@@ -41,7 +48,7 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Rate limiter
+// ✅ RATE LIMITER
 const authLimiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10),
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '10', 10),
@@ -54,12 +61,7 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// ✅ FIX 2: Dynamic server URL (important for Railway)
-const BASE_URL =
-  process.env.BASE_URL ||
-  `http://localhost:${PORT}`;
-
-// Swagger config
+// ✅ SWAGGER CONFIG
 const swaggerOptions: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
@@ -80,6 +82,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
+// ✅ SWAGGER UI
 app.use(
   '/api-docs',
   swaggerUi.serve,
@@ -88,21 +91,21 @@ app.use(
   })
 );
 
-// ✅ FIX 3: ROOT ROUTE (MOST IMPORTANT)
+// ✅ ROOT ROUTE
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).json({
     success: true,
-    message: '🚀 Finance Backend API is running on Railway!',
+    message: '🚀 Finance Backend API is running!',
   });
 });
 
-// Swagger JSON
+// ✅ SWAGGER JSON
 app.get('/api-docs.json', (_req: Request, res: Response) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
 });
 
-// Health check
+// ✅ HEALTH CHECK
 app.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({
     success: true,
@@ -110,17 +113,18 @@ app.get('/health', (_req: Request, res: Response) => {
     data: {
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
     },
   });
 });
 
-// Routes
+// ✅ ROUTES
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// 404 handler
+// ✅ 404 HANDLER
 app.use((_req: Request, res: Response) => {
   res.status(404).json({
     success: false,
@@ -129,7 +133,7 @@ app.use((_req: Request, res: Response) => {
   });
 });
 
-// Error handler
+// ✅ ERROR HANDLER
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
@@ -149,10 +153,8 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
-// Start server
+// ✅ START SERVER
 if (process.env.NODE_ENV !== 'test') {
-  const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
-
   app.listen(PORT, () => {
     console.log(`\n🚀 Finance Backend Server running on ${BASE_URL}`);
     console.log(`📚 API Docs available at ${BASE_URL}/api-docs`);
@@ -160,4 +162,5 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}\n`);
   });
 }
+
 export default app;
