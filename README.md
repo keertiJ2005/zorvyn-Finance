@@ -2,85 +2,207 @@
 
 A production-quality **Finance Data Processing and Access Control Backend** built with Node.js, TypeScript, Express.js, and Prisma ORM. Features JWT authentication, role-based access control (RBAC), full CRUD for financial transactions, and rich dashboard analytics.
 
----
+This project demonstrates **real-world backend engineering skills**, including:
 
-## 📋 Table of Contents
-
-- [Project Overview](#-project-overview)
-- [Tech Stack](#-tech-stack)
-- [Getting Started](#-getting-started)
-- [API Documentation](#-api-documentation)
-- [Role & Permission Matrix](#-role--permission-matrix)
-- [Folder Structure](#-folder-structure)
-- [Assumptions Made](#-assumptions-made)
-- [Tradeoffs & Design Decisions](#-tradeoffs--design-decisions)
-- [Running Tests](#-running-tests)
+* 🔐 JWT Authentication
+* 🧑‍💼 Role-Based Access Control (RBAC)
+* 💳 Transaction Management (CRUD + Filters)
+* 📊 Dashboard Analytics
+* 🛢️ PostgreSQL Cloud Deployment (Railway)
+* 📄 Swagger API Documentation
+* ⚙️ Production-ready Architecture
 
 ---
 
-## 🏗 Project Overview
+# 🌐 Live Deployment
 
-This system provides a comprehensive backend for managing financial data with three core capabilities:
+* 🚀 **Backend URL:**
+  https://zorvyn-finance-production-5584.up.railway.app
 
-1. **Authentication & Authorization** — JWT-based auth with role-based access control (VIEWER, ANALYST, ADMIN)
-2. **Transaction Management** — Full CRUD for financial records (income/expense) with filtering, pagination, search, and soft delete
-3. **Dashboard Analytics** — Summary statistics, category breakdowns, monthly trends, recent activity, and weekly summaries
-
-All endpoints return standardized JSON responses with consistent error handling, validation, and pagination.
+* 📚 **Swagger Docs:**
+  https://zorvyn-finance-production-5584.up.railway.app/api-docs
 
 ---
 
-## ⚙️ Tech Stack
+# 📋 Table of Contents
 
-| Technology | Purpose |
-|---|---|
-| **Node.js** | Runtime environment |
-| **TypeScript** | Type safety and developer experience |
-| **Express.js** | HTTP framework |
-| **Prisma ORM** | Database access and schema management |
-| **SQLite** | Lightweight database (easily swappable to PostgreSQL) |
-| **JWT (jsonwebtoken)** | Stateless authentication |
-| **bcryptjs** | Password hashing |
-| **Zod** | Request validation with type inference |
-| **Swagger/OpenAPI** | Auto-generated API documentation |
-| **Jest + Supertest** | Testing framework |
-| **Helmet** | Security headers |
-| **express-rate-limit** | Rate limiting on auth routes |
-| **CORS** | Cross-origin request handling |
+* Project Overview
+* Features
+* Tech Stack
+* Architecture
+* Getting Started
+* Environment Setup
+* Database Migration (SQLite → PostgreSQL)
+* API Documentation
+* Role & Permission Matrix
+* Folder Structure
+* Assumptions Made
+* Tradeoffs & Design Decisions
+* Testing
+* Deployment
+* Challenges Faced & Solutions
+* Future Improvements
+* Conclusion
 
 ---
 
-## 🚀 Getting Started
+# 🏗 Project Overview
 
-### Prerequisites
+This system provides a complete backend for managing financial data with three core capabilities:
 
-- **Node.js** >= 18.x
-- **npm** >= 9.x
+### 1. Authentication & Authorization
 
-### Installation
+* JWT-based authentication
+* Secure password hashing
+* Role-based access (VIEWER, ANALYST, ADMIN)
+
+### 2. Transaction Management
+
+* Full CRUD operations
+* Filtering, sorting, pagination
+* Search functionality
+* Soft delete system
+
+### 3. Dashboard Analytics
+
+* Total income & expenses
+* Monthly financial trends
+* Category breakdowns
+* Weekly summaries
+* Recent activity tracking
+
+All APIs return **standardized JSON responses** with:
+
+* Consistent structure
+* Centralized error handling
+* Validation using Zod
+
+---
+
+# ✨ Features
+
+## 🔐 Authentication
+
+* Register & Login APIs
+* JWT-based session management
+* Secure password storage (bcrypt)
+
+## 👥 Role-Based Access Control
+
+* VIEWER → Read-only access
+* ANALYST → Analytics access
+* ADMIN → Full system control
+
+## 💳 Transactions
+
+* Create / Read / Update / Delete
+* Soft deletion (no permanent loss)
+* Advanced filtering & search
+* Pagination & sorting
+
+## 📊 Dashboard
+
+* Financial summaries
+* Category-wise breakdown
+* Monthly trends
+* Weekly reports
+
+## 🛡️ Security
+
+* Helmet for HTTP security headers
+* Rate limiting (auth routes)
+* CORS protection
+* Input validation using Zod
+
+---
+
+# ⚙️ Tech Stack
+
+| Technology       | Purpose             |
+| ---------------- | ------------------- |
+| Node.js          | Runtime             |
+| TypeScript       | Type safety         |
+| Express.js       | Backend framework   |
+| Prisma ORM       | Database ORM        |
+| PostgreSQL       | Production database |
+| JWT              | Authentication      |
+| bcryptjs         | Password hashing    |
+| Zod              | Validation          |
+| Swagger          | API documentation   |
+| Jest + Supertest | Testing             |
+| Helmet| Security headers |
+| express-rate-limit| Rate limiting on auth routes |
+| CORS   | Cross-origin request handling |
+
+
+---
+
+# 🧠 Architecture
+
+Follows **Controller → Service → Database pattern**
+
+```
+Controller → Service → Prisma ORM → PostgreSQL
+```
+
+### Benefits:
+
+* Clean code separation
+* Scalable structure
+* Easy debugging & testing
+
+---
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+* Node.js >= 18
+* npm >= 9
+
+---
+
+## Installation
 
 ```bash
-# Clone the repository
 git clone <repository-url>
 cd finance-backend
-
-# Install dependencies
 npm install
+```
 
 # Generate Prisma client
+```bash
 npx prisma generate
+```
 
 # Run database migrations
+```bash
 npx prisma migrate dev --name init
+```
 
 # Seed the database with sample data
+``` bash
 npm run seed
+```
 
-# Start the development server
+## Run Locally
+
+```bash
 npm run dev
 ```
 
-### Environment Setup
+---
+
+## Build & Start
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+# 🔑 Environment Setup
 
 Copy `.env.example` to `.env` and update values as needed:
 
@@ -88,50 +210,99 @@ Copy `.env.example` to `.env` and update values as needed:
 cp .env.example .env
 ```
 
-#### Environment Variables
 
-| Variable | Description | Default |
-|---|---|---|
-| `DATABASE_URL` | Database connection string | `file:./dev.db` |
-| `JWT_SECRET` | Secret key for JWT signing | (required) |
-| `JWT_EXPIRES_IN` | Token expiration time | `24h` |
-| `PORT` | Server port | `3000` |
-| `NODE_ENV` | Environment mode | `development` |
-| `RATE_LIMIT_WINDOW_MS` | Rate limit window (ms) | `900000` (15 min) |
-| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | `10` |
-| `CORS_ORIGIN` | Allowed CORS origin | `*` |
-
-### Seeded Test Credentials
-
-| Role | Email | Password |
-|---|---|---|
-| ADMIN | admin@finance.com | password123 |
-| ANALYST | analyst@finance.com | password123 |
-| VIEWER | viewer@finance.com | password123 |
-
-### Available Scripts
-
-```bash
-npm run dev          # Start dev server with hot reload
-npm run build        # Build for production
-npm start            # Start production server
-npm run seed         # Seed database with sample data
-npm test             # Run tests
-npx prisma studio    # Open Prisma Studio (DB GUI)
+```env
+DATABASE_URL=postgresql://...
+JWT_SECRET=your_secret_key
+JWT_EXPIRES_IN=24h
+PORT=3000
+NODE_ENV=development
+CORS_ORIGIN=*
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=10
 ```
 
 ---
 
-## 📡 API Documentation
+# 🛢️ Database Migration (SQLite → PostgreSQL)
 
-Interactive Swagger documentation is available at: **`http://localhost:3000/api-docs`**
+Originally built using SQLite, later migrated to PostgreSQL for production.
 
-### Base URL: `http://localhost:3000`
+## Changes Made:
+
+### 1. Prisma Schema Update
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+### 2. Railway Integration
+
+* Connected PostgreSQL service
+* Added DATABASE_URL in environment variables
+
+### 3. Deployment Fixes
+
+* Removed prisma.config.ts (env issue)
+* Fixed CORS for production
+* Fixed Swagger base URL
 
 ---
 
-### 🔐 Authentication
+# 📡 API Documentation
 
+Available at:
+
+```
+/api-docs
+```
+
+---
+
+## 🔐 Authentication
+
+### POST /api/auth/register
+
+Register a new user
+
+### POST /api/auth/login
+
+Login user and get JWT token
+
+---
+
+## 👥 User Management (ADMIN)
+
+* GET /api/users
+* GET /api/users/:id
+* PATCH /api/users/:id/role
+* PATCH /api/users/:id/status
+* DELETE /api/users/:id
+
+---
+
+## 💳 Transactions
+
+* POST /api/transactions (ADMIN)
+* GET /api/transactions (ALL)
+* GET /api/transactions/:id
+* PATCH /api/transactions/:id (ADMIN)
+* DELETE /api/transactions/:id (ADMIN)
+
+---
+
+## 📊 Dashboard
+
+* GET /api/dashboard/summary
+* GET /api/dashboard/category-breakdown
+* GET /api/dashboard/monthly-trends
+* GET /api/dashboard/recent-activity
+* GET /api/dashboard/weekly-summary
+
+---
 #### `POST /api/auth/register`
 Register a new user.
 
@@ -280,7 +451,6 @@ Update a transaction (partial update supported).
 Soft delete a transaction (sets `isDeleted = true`).
 
 ---
-
 ### 📊 Dashboard
 
 #### `GET /api/dashboard/summary` (ALL roles)
@@ -353,23 +523,22 @@ All errors follow this structure:
 
 ---
 
-## 🔒 Role & Permission Matrix
 
-| Action | VIEWER | ANALYST | ADMIN |
-|---|:---:|:---:|:---:|
-| View transactions | ✅ | ✅ | ✅ |
-| Create transaction | ❌ | ❌ | ✅ |
-| Update transaction | ❌ | ❌ | ✅ |
-| Delete transaction | ❌ | ❌ | ✅ |
-| View dashboard summary | ✅ | ✅ | ✅ |
-| View recent activity | ✅ | ✅ | ✅ |
-| View category breakdown | ❌ | ✅ | ✅ |
-| View monthly trends | ❌ | ✅ | ✅ |
-| View weekly summary | ❌ | ✅ | ✅ |
-| Manage users | ❌ | ❌ | ✅ |
-| Change roles/status | ❌ | ❌ | ✅ |
+# 🔒 Role & Permission Matrix
+
+| Action             | VIEWER | ANALYST | ADMIN |
+| ------------------ | :----: | :-----: | :---: |
+| View transactions  |    ✅   |    ✅    |   ✅   |
+| Create transaction |    ❌   |    ❌    |   ✅   |
+| Update transaction |    ❌   |    ❌    |   ✅   |
+| Delete transaction |    ❌   |    ❌    |   ✅   |
+| Dashboard summary  |    ✅   |    ✅    |   ✅   |
+| Analytics          |    ❌   |    ✅    |   ✅   |
+| Manage users       |    ❌   |    ❌    |   ✅   |
 
 ---
+
+# 📁 Folder Structure
 
 ## 📁 Folder Structure
 
@@ -418,9 +587,9 @@ Each module follows the **Controller → Service → Model** pattern:
 
 ---
 
-## 📝 Assumptions Made
 
-1. **SQLite is used** for simplicity; the schema is fully compatible with PostgreSQL by changing the Prisma provider
+# 📝 Assumptions Made
+1. **PosygreSQL is used** for production; the schema is fully compatible with the Prisma provider
 2. **Default role is VIEWER** when registering without specifying a role
 3. **All new users start as ACTIVE** by default
 4. **Soft delete** is used for transactions — they are never permanently removed
@@ -428,38 +597,37 @@ Each module follows the **Controller → Service → Model** pattern:
 6. **Amount is stored as Float** (suitable for most use cases; for production financial systems, use Decimal)
 7. **Rate limiting** applies only to auth routes (register + login) — 10 requests per 15 minutes per IP
 8. **JWT tokens expire in 24 hours** by default (configurable via env)
-9. **Search** is case-sensitive in SQLite (would be case-insensitive with PostgreSQL `ilike`)
-10. **Monthly trends** are ordered chronologically based on transaction dates
-11. **Weekly summary** covers the last 7 calendar days from now
+9. **Monthly trends** are ordered chronologically based on transaction dates
+10. **Weekly summary** covers the last 7 calendar days from now
+
 
 ---
 
-## ⚖️ Tradeoffs & Design Decisions
+# ⚖️ Tradeoffs & Design Decisions
 
-| Decision | Rationale |
-|---|---|
-| **SQLite over PostgreSQL** | Simpler setup for development/demo; easily swappable via Prisma provider |
-| **Zod over Joi** | Better TypeScript inference, smaller bundle, more modern API |
-| **Static class methods** | Clean service layer without instantiation; works well for stateless operations |
-| **Singleton Prisma client** | Prevents connection pool exhaustion during hot-reloading |
-| **Soft delete pattern** | Preserves data integrity and enables audit trails |
-| **Aggregation in app layer** | SQLite lacks advanced aggregate functions; Prisma raw queries avoided for portability |
-| **No refresh tokens** | Simplified auth flow for internship scope; access tokens only |
-| **Global error middleware** | Centralized error handling prevents response format inconsistencies |
-| **Swagger via JSDoc** | Co-located docs with routes; stays in sync with code |
+| Decision          | Reason                    |
+| ----------------- | ------------------------- |
+| PostgreSQL        | Scalable production DB    |
+| Prisma ORM        | Type-safe queries         |
+| JWT Auth          | Stateless system          |
+| Zod               | Better TypeScript support |
+| Soft Delete       | Data safety               |
+| No Refresh Tokens | Simplicity                |
 
 ---
 
-## 🧪 Running Tests
+# 🧪 Running Tests
 
 ```bash
 # Run all tests
 npm test
-
+```
 # Run tests in watch mode
+```bash
 npm run test:watch
-
+```
 # Run specific test file
+```bash
 npx jest tests/auth.test.ts --forceExit
 ```
 
@@ -473,8 +641,79 @@ Tests cover:
 - ✅ Role-based dashboard access (VIEWER blocked from analytics)
 - ✅ Unauthenticated request handling
 
+
+
+# 🚀 Deployment (Railway)
+
+## Steps Followed:
+
+1. GitHub integration
+2. PostgreSQL service added
+3. Environment variables configured
+4. Build & deploy
+
 ---
 
-## 📄 License
+## Issues Faced & Fixes
+
+### ❌ CORS Error
+
+✔ Fixed by allowing Railway domain
+
+### ❌ Prisma DB Error
+
+✔ Switched SQLite → PostgreSQL
+
+### ❌ Route Not Found
+
+✔ Added root endpoint
+
+### ❌ Swagger Not Working
+
+✔ Fixed BASE_URL config
+
+---
+
+# 🔮 Future Improvements
+
+* Refresh tokens
+* Email verification
+* Audit logs
+* Docker support
+* CI/CD pipeline
+* GraphQL API
+
+---
+
+# 🧠 Learnings
+
+* Real-world backend deployment
+* Debugging production issues
+* Database migration
+* Environment configuration
+
+---
+
+# 📌 Conclusion
+
+This project showcases:
+
+✅ Backend development skills
+✅ Secure authentication system
+✅ Database design & migration
+✅ Production deployment
+✅ Problem-solving ability
+
+---
+
+# 👩‍💻 Author
+
+**Keerti**
+CSE AIML — Final Year
+Aspiring Software Engineer 
+
+---
+
+# 📄 License
 
 ISC
