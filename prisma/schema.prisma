@@ -3,8 +3,7 @@ generator client {
 }
 
 datasource db {
-  // going with sqlite for now so people can just run `npm dev` without spinning up docker
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
